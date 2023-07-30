@@ -11,7 +11,7 @@ class ProductManager {
             let productsData = await fs.promises.readFile(this.path, "utf8");
             this.product = JSON.parse(productsData).map(product => ({
                 ...product,
-                id: parseInt(product.id) // Convertir el id a número
+                id: parseInt(product.id)
             }));
             return this.product;
         } catch (error) {
@@ -65,7 +65,7 @@ class ProductManager {
     async updateProduct(id, { title, description, price, thumbnail, code, stock }) {
         try {
             let products = await this.getProducts();
-            const productId = parseInt(id); // Convertir el ID a número
+            const productId = parseInt(id); 
 
             const productIndex = products.findIndex(product => product.id === productId);
 
@@ -77,7 +77,6 @@ class ProductManager {
                 throw new Error("Code already exists.");
             }
 
-            // Actualizar los datos del producto en la lista
             products[productIndex] = {
                 ...products[productIndex],
                 title,
@@ -91,7 +90,7 @@ class ProductManager {
             await fs.promises.writeFile(this.path, JSON.stringify(products));
 
             console.log("Successfully updated");
-            return products[productIndex]; // Devolver el producto actualizado
+            return products[productIndex]
         } catch (error) {
             console.error(error);
             throw error;
