@@ -7,13 +7,11 @@ const productManager = new ProductManager();
 productRouter.get('/', async (req, res) => {
   try {
     const products = await productManager.getProducts();
-    res.status(200).json(products);
+    res.render('home', { products }); 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-});
-
-productRouter.post('/', async (req, res) => {
+});productRouter.post('/', async (req, res) => {
   try {
     const { title, description, price, thumbnail, code, stock } = req.body;
     await productManager.addProduct(title, description, price, thumbnail, code, stock);

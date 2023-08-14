@@ -1,8 +1,11 @@
 import express from 'express';
 import CartManager from '../controllers/CartManager.js';
+import { Server } from 'socket.io';
 
 const cartRouter = express.Router();
 const cartManager = new CartManager();
+
+const io = new Server(); 
 
 cartRouter.post('/', async (req, res) => {
   try {
@@ -30,10 +33,13 @@ cartRouter.post('/:cartId/product/:productId', async (req, res) => {
     const { quantity } = req.body;
 
     await cartManager.addProductToCart(cartId, productId, quantity);
+    io.emit('productAdded', { cartId, productId, quantity }); // Emitir evento a todos los clientes
     res.status(200).json({ message: 'Product successfully added to cart' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
 export default cartRouter;
+
