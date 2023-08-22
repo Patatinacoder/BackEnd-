@@ -5,14 +5,14 @@ import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-console.log("__dirname:", __dirname); // Agrega este console.log para verificar el valor de __dirname
+console.log("__dirname:", __dirname); 
 
 const viewRouter = Router();
-const productManager = new ProductManager('././products.json');
+const productManager = new ProductManager('./products.json');
 
 viewRouter.get('/', async (req, res) => {
     const products = await productManager.getProducts();
-    console.log("View path:", path.join(__dirname, 'views')); // Agrega este console.log para verificar la ruta de las vistas
+    console.log('View path:', path.join(__dirname, 'views'));
 
     res.render('home', {
         products: products
@@ -22,7 +22,7 @@ viewRouter.get('/', async (req, res) => {
 
 viewRouter.get('/realTimeProducts', async (req, res) => {
     const products = await productManager.getProducts();
-    console.log("View path:", path.join(__dirname, 'views')); // Agrega este console.log para verificar la ruta de las vistas
+    console.log('View path:', path.join(__dirname, 'views'));
     res.render('realTimeProducts', {
         products: products
     });

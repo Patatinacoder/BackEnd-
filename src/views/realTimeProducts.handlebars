@@ -7,7 +7,6 @@
         const socket = io();
 
         socket.on('productAdded', (data) => {
-            // Agregar el nuevo producto a la lista en tiempo real
             const productList = document.getElementById('product-list');
             const productItem = document.createElement('li');
             productItem.textContent = `${data.title} - ${data.description}`;
@@ -18,7 +17,6 @@
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
             
-            // Emitir el evento de producto agregado a través de WebSockets
             socket.emit('productAdded', { title, description });
         }
     </script>
@@ -41,7 +39,6 @@
         {{/each}}
     </ul>
 
-    <!-- Formulario para agregar productos -->
     <form onsubmit="addProduct(); return false;">
         <input type="text" id="title" placeholder="Título">
         <input type="text" id="description" placeholder="Descripción">

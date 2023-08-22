@@ -27,14 +27,21 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use((req, res, next) => {
+  console.log(`Accessed route: ${req.method} ${req.url}`);
+  next(); 
+});
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'))
+console.log('__dirname:', __dirname);
+
 app.use(bodyParser.json());
 
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
+
 
 app.use('/', viewsRouter)
 server.listen(8080, () => {
