@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos en Tiempo Real</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('productAdded', (data) => {
+            // Agregar el nuevo producto a la lista en tiempo real
+            const productList = document.getElementById('product-list');
+            const productItem = document.createElement('li');
+            productItem.textContent = `${data.title} - ${data.description}`;
+            productList.appendChild(productItem);
+        });
+
+        function addProduct() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            
+            // Emitir el evento de producto agregado a través de WebSockets
+            socket.emit('productAdded', { title, description });
+        }
+    </script>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <ul id="product-list">
+        {{#each products}}
+            <li>{{this.title}}</li>
+                        <li>{{this.description}}</li>
+                                    <li>{{this.price}}</li>
+                                                <li>{{this.thumbnail}}</li>
+                                                            <li>{{this.code}}</li>
+                                                                        <li>{{this.stock}}</li>
+
+
+
+
+
+        {{/each}}
+    </ul>
+
+    <!-- Formulario para agregar productos -->
+    <form onsubmit="addProduct(); return false;">
+        <input type="text" id="title" placeholder="Título">
+        <input type="text" id="description" placeholder="Descripción">
+        <button type="submit">Agregar Producto</button>
+    </form>
+</body>
+</html>
