@@ -37,7 +37,9 @@ class ProductManager {
       let newProduct = { id: this.addNewId(), title, description, price, thumbnail, code, stock };
       this.product.push(newProduct);
       console.log(this.product);
-      await fs.promises.writeFile(this.path, JSON.stringify(this.product));
+      const productsData = JSON.stringify(this.product);
+      await fs.promises.writeFile(this.path, productsData);
+      return newProduct;
     } catch (error) {
       console.error(error);
       throw error;

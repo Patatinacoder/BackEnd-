@@ -26,15 +26,15 @@ io.on('connection', (socket) => {
 
  
 
-  socket.on('addProduct', async (newProduct) => {
+  socket.on('addProduct', async (data) => {
     try {
       const productManager = new ProductManager('./products.json');
-      const addedProduct = await productManager.addProduct(newProduct.title, newProduct.description, newProduct.price, newProduct.thumbnail, newProduct.code, newProduct.stock);
-      io.emit('productAddedToDB', addedProduct);
+      const product = await productManager.addProduct(data.title, data.description, data.price, data.thumbnail, data.code, data.stock);
+      io.emit('productAddedToDB', product);
     } catch (error) {
       console.error('Error al agregar producto:', error.message);
     }
-  });  
+  });
 });
 
 
