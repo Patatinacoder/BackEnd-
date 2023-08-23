@@ -23,31 +23,42 @@ class ProductManager {
   async addProduct(title, description, price, thumbnail, code, stock) {
     try {
       if (!title || !description || !price || !thumbnail || !code || !stock) {
-        throw new Error('All fields are required');
+        throw new Error("All fields are required");
       }
-
-      let maxId = 0;
-      if (this.product.length !== 0) {
-        if (this.product.some((product) => product.code === code)) {
-          throw new Error('Code already exists.');
-        }
+  
+     if (this.product.some((product) => product.code === code)) {
+        throw new Error("Code already exists.");
       }
-
-      maxId++;
-      let newProduct = { id: this.addNewId(), title, description, price, thumbnail, code, stock };
+  
+      let newProduct = {
+        id: await this.addNewId(),
+        title,
+        description,
+        price,
+        thumbnail,
+        code,
+        stock,
+      };
       this.product.push(newProduct);
       console.log(this.product);
       const productsData = JSON.stringify(this.product);
       await fs.promises.writeFile(this.path, productsData);
+  
       return newProduct;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
-
-  addNewId() {
-    return this.product.length + 1;
+  async addNewId() {
+    try {
+      const products = await this.getProducts();
+      const maxId = products.reduce((max, product) => product.id > max ? product.id : max, 0);
+      return maxId + 1;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   async getProductById(id) {
