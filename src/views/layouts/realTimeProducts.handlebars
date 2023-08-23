@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos en Tiempo Real</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('productAddedToDB', (product) => {
+            const productList = document.getElementById('product-list');
+            const productItem = document.createElement('ul');
+            productItem.innerHTML = `
+                <h4>Product</h4>
+                <li>Title: ${product.title}</li>
+                <li>Description: ${product.description}</li>
+                <li>Price: ${product.price}</li>
+                <li>Image: ${product.thumbnail}</li>
+                <li>Code: ${product.code}</li>
+                <li>Stock: ${product.stock}</li>
+            `;
+            productList.appendChild(productItem);
+        });
+
+        function addProduct() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const price = document.getElementById('price').value;
+            const thumbnail = document.getElementById('thumbnail').value;
+            const code = document.getElementById('code').value;
+            const stock = document.getElementById('stock').value;
+
+            const newProduct = { title, description, price, thumbnail, code, stock };
+            socket.emit('addProduct', newProduct);
+        }
+    </script>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <div id="product-list">
+        {{#each products}}
+            <ul>
+                <h4>Product</h4>
+                <li>Title: {{this.title}}</li>
+                <li>Description: {{this.description}}</li>
+                <li>Price: {{this.price}}</li>
+                <li>Image: {{this.thumbnail}}</li>
+                <li>Code: {{this.code}}</li>
+                <li>Stock: {{this.stock}}</li>
+            </ul>
+        {{/each}}
+    </div>
+
+    <form onsubmit="addProduct(); return false;">
+        <input type="text" id="title" placeholder="Título">
+        <input type="text" id="description" placeholder="Descripción">
+        <input type="text" id="price" placeholder="Price">
+        <input type="text" id="thumbnail" placeholder="Thumbnail">
+        <input type="text" id="code" placeholder="Code">
+        <input type="text" id="stock" placeholder="Stock">
+        <button type="submit">Add Product</button>
+    </form>
+</body>
+</html>

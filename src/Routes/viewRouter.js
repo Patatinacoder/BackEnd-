@@ -5,27 +5,30 @@ import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-console.log("__dirname:", __dirname); 
 
 const viewRouter = Router();
 const productManager = new ProductManager('./products.json');
 
 viewRouter.get('/', async (req, res) => {
     const products = await productManager.getProducts();
-    console.log('View path:', path.join(__dirname, 'views'));
 
-    res.render('home', {
+    res.render('layouts/home', {
         products: products
     });
     
 });
 
 viewRouter.get('/realTimeProducts', async (req, res) => {
-    const products = await productManager.getProducts();
-    console.log('View path:', path.join(__dirname, 'views'));
-    res.render('realTimeProducts', {
+    try {
+      const products = await productManager.getProducts();
+      res.render('layouts/realTimeProducts', {
+        title: 'Lista de productos en tiempo real',
         products: products
-    });
-});
-
+        
+      });
+    } catch (error) {
+      console.error('Error al obtener lista de productos:', error);
+      res.status(500).send('Error al obtener lista de productos en tiempo real.');
+    }
+  });
 export default viewRouter

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import productRouter from './Routes/productRouter.js';
 import cartRouter from './Routes/cartRouter.js';
 import viewsRouter from './Routes/viewRouter.js'
+import ProductManager from './controllers/ProductManager.js';
 
 
 const app = express();
@@ -19,13 +20,23 @@ const __dirname = path.dirname(__filename)
 
 const hbs = exphbs.create();
 
+
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
 
-  socket.on('productAdded', (data) => {
-    io.emit('productAdded', data);
-  });
+ 
+
+  socket.on('addProduct', async (newProduct) => {
+    try {
+      const productManager = new ProductManager('./products.json');
+      const addedProduct = await productManager.addProduct(newProduct.title, newProduct.description, newProduct.price, newProduct.thumbnail, newProduct.code, newProduct.stock);
+      io.emit('productAddedToDB', addedProduct);
+    } catch (error) {
+      console.error('Error al agregar producto:', error.message);
+    }
+  });  
 });
+
 
 app.use((req, res, next) => {
   console.log(`Accessed route: ${req.method} ${req.url}`);
@@ -34,7 +45,7 @@ app.use((req, res, next) => {
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname,  'views'))
 console.log('__dirname:', __dirname);
 
 app.use(bodyParser.json());
