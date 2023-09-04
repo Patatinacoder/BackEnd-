@@ -1,5 +1,5 @@
 import { Router } from "express"; 
-import ProductManager from "../controllers/ProductManager.js";
+import ProductManager from "../services/ProductManager.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -24,7 +24,7 @@ viewRouter.get('/realTimeProducts', async (req, res) => {
       res.render('layouts/realTimeProducts', {
         title: 'Lista de productos en tiempo real',
         products: products
-        
+
       });
     } catch (error) {
       console.error('Error al obtener lista de productos:', error);
