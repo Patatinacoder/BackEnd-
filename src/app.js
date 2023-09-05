@@ -13,6 +13,7 @@ import viewsRouter from './Routes/viewRouter.js';
 import ProductService from './services/ProductServices.js';
 import MessagesService from './services/MessagesService.js';
 import CartService from './services/CartServices.js';
+import messageRouter from './Routes/messagesRouter.js';
 dotenv.config();
 
 const app = express();
@@ -26,7 +27,7 @@ const hbs = exphbs.create();
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
 
-  socket.on('addProduct', async (data) => {
+  socket.on('productAddedToDB', async (data) => {
     try {
       const product = await ProductService.addProduct(data.title, data.description, data.price, data.thumbnail, data.code, data.stock);
       io.emit('productAddedToDB', product);
@@ -68,7 +69,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.json());
 
-// Configurar Express para servir archivos estáticos (CSS, imágenes, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/products', productRouter);

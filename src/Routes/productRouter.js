@@ -2,7 +2,7 @@ import { Router } from 'express';
 import ProductService from '../services/ProductServices.js';
 const productRouter = Router();
 
-productRouter.get('/products', async (req, res) => {
+productRouter.get('/', async (req, res) => {
   try {
     const products = await ProductService.getProducts();
     res.status(200).json(products);
@@ -12,7 +12,7 @@ productRouter.get('/products', async (req, res) => {
   }
 });
 
-productRouter.post('/products', async (req, res) => {
+productRouter.post('/', async (req, res) => {
   const { title, description, price, thumbnail, code, stock } = req.body;
   try {
     const newProduct = await ProductService.addProduct(title, description, price, thumbnail, code, stock);
@@ -23,7 +23,7 @@ productRouter.post('/products', async (req, res) => {
   }
 });
 
-productRouter.get('/products/:id', async (req, res) => {
+productRouter.get('/:id', async (req, res) => {
   const productId = req.params.id;
   try {
     const product = await ProductService.getProductById(productId);
@@ -34,7 +34,7 @@ productRouter.get('/products/:id', async (req, res) => {
   }
 });
 
-productRouter.put('/products/:id', async (req, res) => {
+productRouter.put('/:id', async (req, res) => {
   const productId = req.params.id;
   const updatedProductData = req.body;
   try {
@@ -46,7 +46,7 @@ productRouter.put('/products/:id', async (req, res) => {
   }
 });
 
-productRouter.delete('/products/:id', async (req, res) => {
+productRouter.delete('/:id', async (req, res) => {
   const productId = req.params.id;
   try {
     const deletedProduct = await ProductService.deleteProduct(productId);

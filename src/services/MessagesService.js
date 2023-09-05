@@ -1,7 +1,8 @@
 import Message from "./models/messagesModel.js";
+
 class MessagesService {
   // Método para obtener todos los mensajes
-  static async getMessages() {
+  async getMessages() {
     try {
       const messages = await Message.find();
       return messages;
@@ -11,7 +12,7 @@ class MessagesService {
   }
 
   // Método para agregar un nuevo mensaje
-  static async addMessage(user, message) {
+  async addMessage(user, message) {
     try {
       const newMessage = new Message({
         user,

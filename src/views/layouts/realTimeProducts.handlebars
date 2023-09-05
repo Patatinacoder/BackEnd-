@@ -30,7 +30,7 @@
             const stock = document.getElementById('stock').value;
 
             const newProduct = { title, description, price, thumbnail, code, stock };
-            socket.emit('addProduct', newProduct);
+            socket.emit('productAddedToDB', newProduct);
         }
     </script>
 </head>
@@ -58,6 +58,7 @@
         <input type="text" id="code" placeholder="Code">
         <input type="text" id="stock" placeholder="Stock">
         <button type="submit">Add Product</button>
+        
     </form>
 </body>
 </html>

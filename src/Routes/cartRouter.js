@@ -2,7 +2,7 @@ import { Router } from 'express';
 import CartService from '../services/CartServices.js';
 const cartRouter = Router();
 
-cartRouter.get('/carts', async (req, res) => {
+cartRouter.get('/', async (req, res) => {
   try {
     const carts = await CartService.getCarts();
     res.status(200).json(carts);
@@ -12,7 +12,7 @@ cartRouter.get('/carts', async (req, res) => {
   }
 });
 
-cartRouter.post('/carts', async (req, res) => {
+cartRouter.post('/', async (req, res) => {
   try {
     const newCart = await CartService.addCart();
     res.status(201).json(newCart);
@@ -22,7 +22,7 @@ cartRouter.post('/carts', async (req, res) => {
   }
 });
 
-cartRouter.get('/carts/:id', async (req, res) => {
+cartRouter.get('/:id', async (req, res) => {
   const cartId = req.params.id;
   try {
     const cart = await CartService.getCartById(cartId);
@@ -33,7 +33,7 @@ cartRouter.get('/carts/:id', async (req, res) => {
   }
 });
 
-cartRouter.post('/carts/:cartId/products/:productId', async (req, res) => {
+cartRouter.post('/:cartId/products/:productId', async (req, res) => {
   const cartId = req.params.cartId;
   const productId = req.params.productId;
   const { quantity } = req.body;
