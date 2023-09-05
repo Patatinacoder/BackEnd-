@@ -82,7 +82,7 @@ class CartManager {
     const existingIds = new Set(this.carts.map(cart => cart.id));
     let newId;
     do {
-      newId = String(Math.floor(Math.random() * 1000)); // Generar un ID aleatorio como cadena
+      newId = String(Math.floor(Math.random() * 1000)); 
     } while (existingIds.has(newId));
     return newId;
   }

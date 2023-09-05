@@ -5,17 +5,16 @@ import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose'; 
+import mongoose from 'mongoose'; // Agrega esta importación
 import productRouter from './Routes/productRouter.js';
 import cartRouter from './Routes/cartRouter.js';
 import viewsRouter from './Routes/viewRouter.js';
-import ProductService from './services/ProductServices.js';
-import MessagesService from './services/MessagesService.js';
-import CartService from './services/CartServices.js';
-import messageRouter from './Routes/messagesRouter.js';
+import ProductManager from './services/ProductManager.js';
+import dotenv from 'dotenv';
+
 dotenv.config();
 
+const MONGODB_URI = process.env.MONGODB_URI;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -27,36 +26,32 @@ const hbs = exphbs.create();
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
 
-  socket.on('productAddedToDB', async (data) => {
+  socket.on('productAddedToDB', async (newProduct) => {
     try {
-      const product = await ProductService.addProduct(data.title, data.description, data.price, data.thumbnail, data.code, data.stock);
-      io.emit('productAddedToDB', product);
+      const productManager = new ProductManager('./products.json');
+      const addedProduct = await productManager.addProduct(
+        newProduct.title,
+        newProduct.description,
+        newProduct.price,
+        newProduct.thumbnail,
+        newProduct.code,
+        newProduct.stock
+      );
+      io.emit('productAddedToDB', addedProduct);
     } catch (error) {
       console.error('Error al agregar producto:', error.message);
-      socket.emit('error', 'Error al agregar producto');
-    }
-  });
-
-  socket.on('sendMessage', async (data) => {
-    try {
-      const message = await MessagesService.addMessage(data.user, data.message);
-      io.emit('newMessage', message);
-    } catch (error) {
-      console.error('Error al enviar mensaje:', error.message);
-      socket.emit('error', 'Error al enviar mensaje');
-    }
-  });
-
-  socket.on('addCart', async () => {
-    try {
-      const cart = await CartService.addCart();
-      io.emit('cartAddedToDB', cart);
-    } catch (error) {
-      console.error('Error al agregar carrito:', error.message);
-      socket.emit('error', 'Error al agregar carrito');
     }
   });
 });
+
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Conectado a MongoDB');
+  })
+  .catch((err) => {
+    console.error('Error de conexión a MongoDB:', err);
+  });
 
 app.use((req, res, next) => {
   console.log(`Accessed route: ${req.method} ${req.url}`);
@@ -66,32 +61,14 @@ app.use((req, res, next) => {
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
+console.log('__dirname:', __dirname);
 
 app.use(bodyParser.json());
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 
 app.use('/', viewsRouter);
-
-// Manejo de errores global
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Error interno del servidor' });
-});
-
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
-
-const PORT = process.env.PORT || 8080;
-
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(8080, () => {
+  console.log('Server running on port 8080');
 });
