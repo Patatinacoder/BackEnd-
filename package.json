@@ -10,6 +10,7 @@
     "http": "^0.0.1-security",
     "mongodb": "^2.2.12",
     "mongoose": "^7.5.0",
+    "mongoose-paginate-v2": "^1.7.31",
     "nodejs": "^0.0.0",
     "Router": "^2.1.0",
     "socket.io": "^4.7.2",

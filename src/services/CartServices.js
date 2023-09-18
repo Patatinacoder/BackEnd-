@@ -37,7 +37,7 @@ class CartService {
 
   async addProductToCart(cartId, productId, quantity) {
     try {
-      const cart = await Cart.findById(cartId);
+      const cart = await Cart.findById(cartId)
 
       if (!cart) {
         throw new Error('Carrito no encontrado.');

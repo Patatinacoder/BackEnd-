@@ -1,0 +1,35 @@
+<div class="container">
+  <h1>Lista de productos</h1>
+  <div class="row">
+    <% for (let producto of productos) { %>
+    <div class="col-sm-4 mb-3">
+      <div class="card">
+        <img src="<%= producto.thumbnail %>" alt="<%= producto.title %>" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title"><%= producto.title %></h5>
+          <p class="card-text">$<%= producto.price %></p>
+          <p class="card-text"><%= producto.description %></p>
+          <a href="/productos/<%= producto._id %>" class="btn btn-sm btn-primary mb-2">Ver detalles</a>
+          <form action="/api/v1/carts/<%= cartId %>/products" method="POST">
+            <input type="hidden" name="productId" value="<%= producto._id %>">
+            <input type="hidden" name="price" value="<%= producto.price %>">
+            <button type="submit" class="btn btn-sm btn-success">Agregar al carrito</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% if (prevLink || nextLink) { %>
+  <nav aria-label="Navegación">
+    <ul class="pagination">
+      <% if (prevLink) { %>
+      <li class="page-item"><a class="page-link" href="<%= prevLink %>">Anterior</a></li>
+      <% } %>
+      <% if (nextLink) { %>
+      <li class="page-item"><a class="page-link" href="<%= nextLink %>">Siguiente</a></li>
+      <% } %>
+    </ul>
+  </nav>
+  <% } %>
+</div>

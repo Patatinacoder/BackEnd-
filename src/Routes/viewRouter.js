@@ -32,4 +32,5 @@ viewRouter.get('/realTimeProducts', async (req, res) => {
       res.status(500).send('Error al obtener lista de productos en tiempo real.');
     }
   });
+
 export default viewRouter
