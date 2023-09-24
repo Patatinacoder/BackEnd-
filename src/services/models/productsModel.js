@@ -18,6 +18,14 @@ const Product = mongoose.Schema({
     type: Number,
     required: true,
   },
+  thumbnail:{
+    type: String,
+    required:true,
+  },
+  code:{
+    type: Number,
+    required: true,
+  },
   
 });
 

@@ -1,84 +1,14 @@
 import { Router } from 'express';
 import ProductService from '../services/ProductServices.js';
+
 const productRouter = Router();
 
 productRouter.get('/', async (req, res) => {
-const limit = parseInt(req.query.limit) || 10;
-const page = parseInt(req.query.page) || 1;
-const sort = req.query.sort === 'desc'?- 1 : 1 ;
-const query = req.query.query;
-try{
-  const {docs, totalPages, prevPage, nextPage,page : currentPage, hasPrevPAge, hasNextPage}=await
-  ProductService.getPaginatedProducts(
-    limit,
-    page,
-    sort,
-    query
-  );
-  const result = {
-    status: 'success',
-    playload: docs,
-    totalPages,
-    prevPage,
-    nextPage,
-    currentPage,
-    hasPrevPAge,
-    hasNextPage,
-    prevLink: prevPage ? `/api/v1/products?limit=${limit}&page=${prevPage}&query=${query || ''}&sort=${req.query.sort || ''}`: null,
-    nextLink: nextPage? `/api/v1/products?limit=${limit}&page=${nextPage}&query=${query || ''}&sort=${req.query.sort || ''}`: null
-  }
-  res.status(200).json(result)
-}catch(err){
-  console.log(err)
-  res.status(500).send('Error al obtener los productos')
-}
-// try{
-//   //   const products = await ProductService.getProducts();
-//   //   res.status(200).json(products);
-//   // } catch (err) {
-//   //   console.error(err);
-//   //   res.status(500).send('Error al obtener los productos');
-//   }
-});
-
-
-productRouter.get('/category/:category', async (req,res)=>{
-  const category = req.params.category
-  try{
-    const products=await ProductService.getProductsByCategory(category);
-    res.status(200).json(products)
-  } catch(err){
-    console.log(err)
-    res.status(500).send('Error al obtener los productos')
-  }
-})
-
-productRouter.get('/available', async (req, res)=>{
-  try{
-    const {docs, totalPages, prevPage, nextPage, page:currentPage, hasPrevPage, hasNextPage} = await 
-    ProductService.getPaginatedProducts(
-      req.query.limit,
-      req.query.page,
-      req.query.sort,
-      '',
-      true
-    );
-    const result = {
-      status: 'success',
-      payload: docs,
-      totalPages,
-      prevPage,
-      nextPage,
-      currentPage,
-      hasPrevPage,
-      hasNextPage,
-      prevLink: prevPage ? `/api/v1/products/available?limit=${req.query.limit}&page=${prevPage}&sort=${req.query.sort || 'asc'}` : null,
-      nextLink: nextPage ? `/api/v1/products/available?limit=${req.query.limit}&page=${nextPage}&sort=${req.query.sort || 'asc'}` : null,
-    };
-    res.status(200).json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener productos');
+  try {
+const products = await ProductService.getProducts()
+res.render('layouts/realTimeProducts', {products})
+  } catch(error){
+    console.log('Error al obtener productos aaaa', error.message);
   }
 });
 
@@ -89,7 +19,7 @@ productRouter.post('/', async (req, res) => {
     res.status(201).json(newProduct);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error al agregar el producto');
+    res.status(500).send('Error al agregar el producto a la db' );
   }
 });
 

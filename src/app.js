@@ -9,9 +9,9 @@ import mongoose from 'mongoose'; // Agrega esta importación
 import productRouter from './Routes/productRouter.js';
 import cartRouter from './Routes/cartRouter.js';
 import viewsRouter from './Routes/viewRouter.js';
-import ProductManager from './services/ProductManager.js';
 import dotenv from 'dotenv';
-
+import ProductServices from './services/ProductServices.js';
+import productsModel from './services/models/productsModel.js';
 dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -20,16 +20,16 @@ const server = http.createServer(app);
 const io = new Server(server);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const hbs = exphbs.create();
+
 
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
 
   socket.on('productAddedToDB', async (newProduct) => {
     try {
-      const productManager = new ProductManager('./products.json');
-      const addedProduct = await productManager.addProduct(
+      const productService = new ProductServices()
+      const addedProduct = await productService.addProduct(
         newProduct.title,
         newProduct.description,
         newProduct.price,
@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
       );
       io.emit('productAddedToDB', addedProduct);
     } catch (error) {
-      console.error('Error al agregar producto:', error.message);
+      console.error('Error al agregar producto aaa:', error.message);
     }
   });
 });
